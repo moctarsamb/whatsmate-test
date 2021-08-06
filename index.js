@@ -35,21 +35,21 @@ router.post('/group', function (req, res) {
     const options = {
         hostname: "api.whatsmate.net",
         port: 80,
-        path: "/v3/whatsapp/single/text/message/" + instanceId,
+        path: "/v3/whatsapp/group/text/message/" + instanceId,
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "X-WM-CLIENT-ID": clientId,
             "X-WM-CLIENT-SECRET": clientSecret,
-            "Content-Length": Buffer.byteLength(jsonPayloadGroup(req.body.message, req.body.group_name, req.body.group_name))
+            "Content-Length": Buffer.byteLength(jsonPayloadGroup(req.body.message, req.body.group_admin, req.body.group_name))
         }
     };
 
     const request = new http.ClientRequest(options);
+    console.log(jsonPayloadGroup(req.body.message, req.body.group_admin, req.body.group_name));
     request.end(jsonPayloadGroup(req.body.message, req.body.group_admin, req.body.group_name));
 
     request.on('response', function (response) {
-        console.log(response)
         console.log('Heard back from the WhatsMate WA Gateway:\n');
         console.log('Status code: ' + response.statusCode);
         response.setEncoding('utf8');
@@ -62,8 +62,6 @@ router.post('/group', function (req, res) {
 
 });
 router.post('/', function (req, res) {
-
-    console.log("We HEre")
     const options = {
         hostname: "api.whatsmate.net",
         port: 80,
@@ -76,11 +74,8 @@ router.post('/', function (req, res) {
             "Content-Length": Buffer.byteLength(jsonPayload(req.body.message, req.body.number))
         }
     };
-
     const request = new http.ClientRequest(options);
-    console.log((req.body.message + " " + req.body.number))
     request.end(jsonPayload(req.body.message, req.body.number));
-
     request.on('response', function (response) {
         console.log('Heard back from the WhatsMate WA Gateway:\n');
         console.log('Status code: ' + response.statusCode);
@@ -93,6 +88,6 @@ router.post('/', function (req, res) {
 
 });
 app.use('/', router);
-app.listen(process.env.port || 3000);
+app.listen(process.env.PORT || 3000);
 
 console.log('Running at Port 3000');
